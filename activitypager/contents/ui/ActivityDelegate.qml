@@ -23,29 +23,14 @@ import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddonsComponents
 
 import org.kde.activities 0.1 as Activities
 
-KQuickControlsAddonsComponents.MouseEventListener {
-	
+MouseArea {
+	id: wrapper
 	property bool isExpanded: false
-	
-	Rectangle {
-		id: highlightBackground
-		anchors {
-			horizontalCenter: parent.horizontalCenter
-			top: activityIcon.x
-		}
-		width: activityIcon.width
-		height: activityIcon.height
-		color: theme.highlightColor
-		opacity: current ? 0.6 : 0
-		radius: 3
-	}
 	
 	PlasmaCore.IconItem {
 		id: activityIcon
 		source: iconSource.length > 0 ? iconSource : "preferences-activities"
 		anchors.horizontalCenter: parent.horizontalCenter
-		
-		//gridView.active: id == current
 		
 		PlasmaCore.ToolTipArea {
 			id: toolTip
@@ -57,10 +42,20 @@ KQuickControlsAddonsComponents.MouseEventListener {
 			subText: iconSource
 			//location: 
 		}
+		
+		function action_stopActivity() {
+			activityTrayModel.stopActivity(id, function() {});
+		}
+		
+		Component.onCompleted: {
+			plasmoid.setAction("stopActivity", i18n("Stop " + name));
+		}
 	}
 	
-	onClicked: activityTrayModel.setCurrentActivity(id, function() {})
-	
+	onClicked: {
+		activityTrayModel.setCurrentActivity(id, function() {});
+		gridView.currentIndex = index;
+	}
 }
 
 /*KQuickControlsAddonsComponents.MouseEventListener {

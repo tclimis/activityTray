@@ -92,8 +92,21 @@ Item {
 			states.remove(state, Qt.CaseInsensitive);
 		activityModel.setShownStates(states);
 	}
+	
+	function action_manageActivities() {
+		var service = dataSource.serviceForSource("Status")
+		var operation = service.operationDescription("toggleActivityManager")
+		service.startOperationCall(operation)
+	}
+	
+	PlasmaCore.DataSource {
+		id: dataSource
+		engine: "org.kde.activities"
+		connectedSources: ["Status"]
+	}
 
 	Component.onCompleted: {
+		plasmoid.setAction("manageActivities", i18n("Manage Activities..."), "preferences-activities");
 	}
 
 	Activities.ActivityModel {
