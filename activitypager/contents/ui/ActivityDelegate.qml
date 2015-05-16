@@ -53,6 +53,9 @@ MouseArea {
 	}
 	
 	onClicked: {
+		if( state == "Stopped" )
+			activityTrayModel.startActivity(id, function() {});
+		
 		activityTrayModel.setCurrentActivity(id, function() {});
 		gridView.currentIndex = index;
 	}
