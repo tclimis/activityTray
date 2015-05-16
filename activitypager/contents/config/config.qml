@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) %{CURRENT_YEAR} by %{AUTHOR} <%{EMAIL}>                            *
+ *   Copyright 2013 by Sebastian Kügler <sebas@kde.org>                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,36 +17,14 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-import QtQuick 1.1
-import org.kde.plasma.core 0.1 as PlasmaCore
-import org.kde.plasma.components 0.1 as PlasmaComponents
+import QtQuick 2.0
 
-Item {
-    property int minimumWidth: 210
-    property int minimumHeight: 210
+import org.kde.plasma.configuration 2.0
 
-    PlasmaCore.Svg {
-        //Instantiate a svg, set the svg image path
-        id: mySvg
-        imagePath: plasmoid.file("images", "pairs.svgz")
-    }
-
-    Column {
-        spacing: 10
-
-        PlasmaCore.SvgItem {
-            id: mySvgItem
-            width: 180
-            height: 180
-            anchors.horizontalCenter: parent.horizontalCenter
-            svg: mySvg //use the svg instanciated above
-        }
-
-        PlasmaComponents.Label {
-            text: i18n("A column with a SVG and a label")
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-            }
-        }
+ConfigModel {
+    ConfigCategory {
+         name: i18n("General")
+         icon: "preferences-system-windows"
+         source: "ConfigGeneral.qml"
     }
 }
