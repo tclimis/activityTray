@@ -27,9 +27,22 @@ MouseArea {
 	id: wrapper
 	property bool isExpanded: false
 	
+	Rectangle {
+		id: highlightBackground
+		color: theme.highlightColor
+		width: gridView.cellWidth
+		height: gridView.cellHeight
+		opacity: current ? 0.6 : 0
+		radius: 3
+		anchors.horizontalCenter: parent.horizontalCenter
+		anchors.verticalCenter: parent.verticalCenter
+	}
+	
 	PlasmaCore.IconItem {
 		id: activityIcon
-		source: iconSource.length > 0 ? iconSource : "preferences-activities"
+		source: iconSource
+		height: gridView.cellHeight
+		width: gridView.cellWidth
 		anchors.horizontalCenter: parent.horizontalCenter
 		
 		PlasmaCore.ToolTipArea {
@@ -39,87 +52,26 @@ MouseArea {
 			active: !isExpanded
 			icon: icon
 			mainText: name
-			subText: iconSource
-			//location: 
-		}
-		
-		function action_stopActivity() {
-			activityTrayModel.stopActivity(id, function() {});
-		}
-		
-		Component.onCompleted: {
-			plasmoid.setAction("stopActivity", i18n("Stop " + name));
+			subText: "::" + state + "::"
 		}
 	}
 	
 	onClicked: {
-		if( state == "Stopped" )
-			activityTrayModel.startActivity(id, function() {});
-		
 		activityTrayModel.setCurrentActivity(id, function() {});
 		gridView.currentIndex = index;
+	}
+	
+	function action_stopActivity() {
+		activityTrayModel.stopActivity(id, function() {});
+	}
+	
+	Component.onCompleted: {
+		plasmoid.setAction("stopActivity", i18n("Stop Activity"));
+		
 	}
 }
 
 /*KQuickControlsAddonsComponents.MouseEventListener {
-    id: activityContainer
-    objectName: "activityContainer"
-
-    height: root.itemSize + (units.smallSpacing * 2)
-    width: snExpanded ? parent.width : height
-
-    property bool isCurrentActivity: modelData.current
-
-    function hideToolTip() {
-        toolTip.hideToolTip()
-    }
-
-    // opacity is raised when: plasmoid is collapsed, we are the current task, or it's hovered
-    opacity: (containsMouse || !plasmoid.expanded || isCurrentTask) || (plasmoid.expanded && root.expandedTask == null) ? 1.0 : 0.6
-    Behavior on opacity { NumberAnimation { duration: units.shortDuration * 3 } }
-
-
-    property string icon: icon
-    property string name: name
-
-    onWidthChanged: updatePlasmoidGeometry()
-    onHeightChanged: updatePlasmoidGeometry()
-
-	onIconChanged: updateToolTip()
-	onNameChanged: updateToolTip()
-
-    function updatePlasmoidGeometry() {
-        var _size = Math.min(activityContainer.width, activityContainer.height);
-        var _m = (activityContainer.height - _size) / 2
-
-        modelData.icon.anchors.verticalCenter = activityContainer.verticalCenter;
-            if (isHiddenItem) {
-                modelData.icon.x = 0;
-            } else {
-                modelData.icon.anchors.centerIn = activityContainer;
-            }
-            modelData.taskItem.height = _size;
-            modelData.taskItem.width = isHiddenItem ? _size * 1.5 : _size;
-        }
-    }
-
-    function updateToolTip() {
-
-    }
-
-    PlasmaCore.ToolTipArea {
-        id: toolTip
-        anchors.fill: parent
-
-        active: !isExpanded
-        icon: activityContainer.icon
-        mainText: activityContainer.name
-        location: activityContainer.location
-        //Loader {
-        //    id: sniLoader
-        //    anchors.fill: parent
-        //}
-    }
 
     Component.onCompleted: {
         if (taskType == SystemTray.Task.TypeStatusItem) {

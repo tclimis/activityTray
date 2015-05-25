@@ -111,13 +111,6 @@ Item {
 		model: activityTrayModel
 
 		delegate: activityDelegateComponent
-		
-		highlight: Rectangle {
-			id: highlightBackground
-			color: theme.highlightColor
-			opacity: 0.6
-			radius: 3
-		}
 		Component.onCompleted: {
 		}
 	}
