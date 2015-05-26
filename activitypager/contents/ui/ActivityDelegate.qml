@@ -25,13 +25,13 @@ import org.kde.activities 0.1 as Activities
 
 MouseArea {
 	id: wrapper
-	property bool isExpanded: false
+	property bool isExpanded: plasmoid.expanded
 	
 	Rectangle {
 		id: highlightBackground
 		color: theme.highlightColor
-		width: gridView.cellWidth
-		height: gridView.cellHeight
+		width: parent.width
+		height: parent.height
 		opacity: current ? 0.6 : 0
 		radius: 3
 		anchors.horizontalCenter: parent.horizontalCenter
@@ -41,8 +41,8 @@ MouseArea {
 	PlasmaCore.IconItem {
 		id: activityIcon
 		source: iconSource
-		height: gridView.cellHeight
-		width: gridView.cellWidth
+		height: parent.height
+		width: parent.width
 		anchors.horizontalCenter: parent.horizontalCenter
 		
 		PlasmaCore.ToolTipArea {
@@ -57,7 +57,6 @@ MouseArea {
 	
 	onClicked: {
 		activityTrayModel.setCurrentActivity(id, function() {});
-		gridView.currentIndex = index;
 	}
 	
 	function action_stopActivity() {
@@ -66,22 +65,5 @@ MouseArea {
 	
 	Component.onCompleted: {
 		plasmoid.setAction("stopActivity", i18n("Stop Activity"));
-		
 	}
 }
-
-/*KQuickControlsAddonsComponents.MouseEventListener {
-
-    Component.onCompleted: {
-        if (taskType == SystemTray.Task.TypeStatusItem) {
-            sniLoader.source = "StatusNotifierItem.qml";
-        } else if (modelData && modelData.taskItem != undefined) {
-            sniLoader.source = "PlasmoidItem.qml";
-            modelData.taskItem.parent = activityContainer;
-            modelData.taskItem.z = -1;
-            updatePlasmoidGeometry();
-        } else {
-            console.warning("Trying to add item to system tray of an unknown type. Ignoring");
-        }
-    }
-}*/

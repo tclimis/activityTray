@@ -47,26 +47,24 @@ Item {
 	property int baseSize: theme.mSize(theme.defaultFont).height
 	property int itemSize: LayoutManager.alignedSize(Math.min(baseSize * 2, preferredItemSize))
 
-	//a pointer to the Task* that is the current one expanded, that shows full ui
-	property QtObject expandedTask: null;
-
 	function togglePopup() {
 		if (!plasmoid.expanded) {
 			plasmoid.expanded = true
 		}
 	}
 
+	// This is the main view in the panel
 	Plasmoid.compactRepresentation: CompactRepresentation {
 		activityTrayModel: activityModel
-		hiddenActivityModel: hiddenActivityModel
 	}
-	// FIXME: This needs to be reimplemented.
-	/*Plasmoid.fullRepresentation: ExpandedRepresentation {
+	// This is the view when clicking on the arrow
+	Plasmoid.fullRepresentation: ExpandedRepresentation {
+		stoppedActivityModel: stoppedActivityModel
 		Layout.minimumWidth: Layout.minimumHeight * 1.75
 		Layout.minimumHeight: units.gridUnit * 14
 		Layout.preferredWidth: Layout.minimumWidth
 		Layout.preferredHeight: Layout.minimumHeight * 1.5
-	}*/
+	}
 
 	Connections {
 		target: plasmoid.configuration
@@ -115,7 +113,7 @@ Item {
 	}
 	
 	Activities.ActivityModel {
-		id: hiddenActivityModel
+		id: stoppedActivityModel
 		shownStates: "Stopped"
 	}
 }

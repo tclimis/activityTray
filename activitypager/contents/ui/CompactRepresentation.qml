@@ -27,7 +27,7 @@ import org.kde.activities 0.1 as Activities
 Item {
 	id: compactRepresentation
 
-	Layout.minimumWidth: !root.vertical ? computeDimension() : 0
+	Layout.minimumWidth: !root.vertical ? computeDimensionWidth() : 0
 	Layout.minimumHeight: !root.vertical ? 0 : computeDimensionHeight()
 	Layout.maximumWidth: plasmoid.formFactor == PlasmaCore.Types.Planar ? units.gridUnit * 3 : Layout.minimumWidth
 	Layout.maximumHeight: plasmoid.formFactor == PlasmaCore.Types.Planar ? units.gridUnit * 3 : Layout.minimumHeight
@@ -49,7 +49,7 @@ Item {
 		}
 	}
 
-	function computeDimension() {
+	function computeDimensionWidth() {
 		var dim = root.vertical ? compactRepresentation.width : compactRepresentation.height
 		var rows = Math.floor(dim / root.itemSize);
 		var cols = Math.ceil(gridView.count / rows);
@@ -63,17 +63,6 @@ Item {
 		var rows = Math.ceil(gridView.count / cols);
 		var res = rows * (root.itemSize + units.smallSpacing) + units.smallSpacing + (tooltip.visible ? tooltip.height : 0);
 		return res;
-	}
-
-	function togglePopup() {
-		//print("toggle popup => " + !plasmoid.expanded);
-		if (!plasmoid.expanded) {
-			plasmoid.expanded = true
-		} else {
-			if (root.expandedTask == null) {
-				plasmoid.expanded = false
-			}
-		}
 	}
 
 	function setItemPreferredSize() {
