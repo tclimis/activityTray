@@ -52,7 +52,6 @@ MouseArea {
 			active: !isExpanded
 			icon: icon
 			mainText: name
-			subText: "::" + state + "::"
 		}
 	}
 	
