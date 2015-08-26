@@ -19,68 +19,34 @@
 
 import QtQuick 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddonsComponents
-import org.kde.activities 0.1 as Activities
+import org.kde.plasma.components 2.0 as PlasmaComponents
 
-MouseArea {
-	id: wrapper
-	acceptedButtons: Qt.LeftButton | Qt.RightButton
-	onClicked: Qt.LeftButton ? 
-					activityModel.setCurrentActivity(id, function() {})
-					: activityModel.stopActivity(id, function() {})
-	
-	property bool isExpanded: plasmoid.expanded
-	property string state: "anchorCenter"
-	
-	Rectangle {
-		id: highlightBackground
-		color: theme.highlightColor
-		width: parent.width
-		height: parent.height
-		opacity: current ? 0.6 : 0
-		radius: 3
-		anchors.horizontalCenter: parent.hCenter
-		anchors.verticalCenter: parent.verticalCenter
-	}
-	
-	PlasmaCore.IconItem {
-		id: activityIcon
-		source: iconSource
-		height: parent.height
-		width: parent.widthactivityIcon
-		state: parent.state
-		
-		PlasmaCore.ToolTipArea {
-			id: toolTip
-			anchors.fill: parent
-			active: !isExpanded
-			mainText: name
-		}
-	}
-	
-	State {
-		name: "anchorCenter"
-		AnchorChanges {
-			target: activityIcon
-			anchors.horizontalCenter: parent.horizontalCenter
-			anchors.left: undefined
-		}
-	}
-	
-	State {
-		name: "anchorLeft"
-		AnchorChanges {
-			target: activityIcon
-			anchors.horizontalCenter: undefined
-			anchors.left: parent.left
-		}
-	}
-	
-	function action_stopActivity() {
-		activityModel.stopActivity(id, function() {});
-	}
-	
-	Component.onCompleted: {
-		plasmoid.setAction("stopActivity", i18n("Stop Activity"));
-	}
+import org.kde.private.systemtray 2.0 as SystemTray
+
+
+ActivityDelegate {
+	id: stoppedActivitiesDelegate
+	objectName: "stoppedActivitiesDelegate"
+
+	height: units.iconSizes.medium + units.smallSpacing
+	acceptedButtons: Qt.LeftButton
+	state: "anchorLeft"
+
+    PlasmaComponents.Highlight {
+        anchors.fill: parent
+        opacity: containsMouse ? 1 : 0
+        Behavior on opacity { NumberAnimation {} }
+    }
+
+    PlasmaComponents.Label {
+        id: mainLabel
+
+        anchors {
+            left: parent.left
+            leftMargin: units.iconSizes.medium + units.smallSpacing
+            right: parent.right
+            verticalCenter: parent.verticalCenter
+        }
+        text: name
+    }
 }

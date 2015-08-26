@@ -42,11 +42,6 @@ Item {
 
 	Connections {
 		target: root
-		onExpandedTaskChanged: {
-			parent.expandedFeedback.opacity = Qt.binding(function() {
-				return root.expandedTask == null && plasmoid.expanded ? 1 : 0
-			})
-		}
 	}
 
 	function computeDimensionWidth() {
@@ -112,7 +107,7 @@ Item {
 
 		width: root.vertical ? compactRepresentation.width : units.iconSizes.smallMedium
 		height: !root.vertical ? compactRepresentation.height : units.iconSizes.smallMedium
-		visible: hiddenActivityModel.count > 0
+		visible: true
 		anchors {
 			right: parent.right
 			bottom: parent.bottom

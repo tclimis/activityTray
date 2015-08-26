@@ -19,34 +19,21 @@
 
 import QtQuick 2.0
 import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddons
+import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.activities 0.1 as Activities
+import org.kde.plasma.core 2.0 as PlasmaCore
 
-KQuickControlsAddons.MouseEventListener {
+Item {
+	id: expandedItemContainer
+	property QtObject stoppedActivityTrayModel: undefined
+	property bool animate: true
+	height: (units.iconSizes.medium + units.smallSpacing) * hiddenView.count + units.smallSpacing
 	
-	property QtObject stoppedActivityModel: undefined
-
 	ListView {
 		id: hiddenView
-		objectName: "hiddenView"
-		clip: false
-		width: parent.width
-
-		interactive: (contentHeight > height)
-
-		anchors {
-			topMargin: units.largeSpacing / 2
-			bottom: parent.bottom
-			left: parent.left
-		}
-		spacing: units.smallSpacing
-
-		model: stoppedActivityModel
-
-		delegate: ActivityDelegate {
-			height: units.iconSizing.small
-			width: units.iconSizing.small
-		}
-
+		model: stoppedActivityTrayModel
+		delegate: ActivityListDelegate {}
+		anchors.fill: parent
 	}
 
 	Connections {

@@ -12,7 +12,7 @@
 *   GNU Library General Public License for more details.                  *
 *                                                                         *
 *   You should have received a copy of the GNU Library General Public     *
-*   License along with this program; if not, write to the                 *
+*   License along with this program; if not, wrstoppedActivityModel.ite to the                 *
 *   Free Software Foundation, Inc.,                                       *
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
 ***************************************************************************/
@@ -34,12 +34,6 @@ Item {
 	Plasmoid.toolTipSubText: ""
 
 	Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
-	Plasmoid.onExpandedChanged: {
-		if (!plasmoid.expanded && root.expandedTask) {
-			root.expandedTask.expanded = false;
-			root.expandedTask = null;
-		}
-	}
 
 	property int preferredItemSize: 128 // will be set by the grid, just needs a high-enough default
 
@@ -49,52 +43,51 @@ Item {
 
 	function togglePopup() {
 		if (!plasmoid.expanded) {
-			plasmoid.expanded = true
+			plasmoid.expanded = true;
 		}
 	}
+		
 
 	// This is the main view in the panel
 	Plasmoid.compactRepresentation: CompactRepresentation {
 		activityTrayModel: activityModel
+		hiddenActivityModel: stoppedActivityModel
 	}
 	// This is the view when clicking on the arrow
 	Plasmoid.fullRepresentation: ExpandedRepresentation {
-		stoppedActivityModel: stoppedActivityModel
-		Layout.minimumWidth: Layout.minimumHeight * 1.75
-		Layout.minimumHeight: units.gridUnit * 14
-		Layout.preferredWidth: Layout.minimumWidth
-		Layout.preferredHeight: Layout.minimumHeight * 1.5
+		stoppedActivityTrayModel: stoppedActivityModel
 	}
 
 	Connections {
 		target: plasmoid.configuration
 		onRunningActivitiesShownChanged: plasmoid.configuration.runningActivitiesShown ? appendState("Running") : removeState("Running");
-		
 		onStoppedActivitiesShownChanged: plasmoid.configuration.stoppedActivitiesShown ? appendState("Stopped") : removeState("Stopped");
 	}
+
 	
 	function appendState(state) {
 		var states = activityModel.shownStates;
-		if( !states.isEmpty() )
-			states.append(",");
-		states.append(state);
+		if( states.length !== 0 ) {
+			states.concat(",");
+		}
+		states.concat(state);
 		activityModel.setShownStates(states);
 	}
 	
 	function removeState(state) {
 		var states = activityModel.shownStates;
 		var stateWithComma = "," + state;
-		if( states.contains(stateWithComma, Qt.CaseInsensitive) )
-			states.remove(stateWithComma, Qt.CaseInsensitive);
-		else if( states.contains(state, Qt.CaseInsensitive) )
-			states.remove(state, Qt.CaseInsensitive);
+		if( states.search(/stateWithComma/i) > 0 )
+			states.replace(/stateWithComma/gi, "");
+		else if( states.search(/state/i) )
+			states.replace(/state/gi, "");
 		activityModel.setShownStates(states);
 	}
 	
 	function action_manageActivities() {
-		var service = dataSource.serviceForSource("Status")
-		var operation = service.operationDescription("toggleActivityManager")
-		service.startOperationCall(operation)
+		var service = dataSource.serviceForSource("Status");
+		var operation = service.operationDescription("toggleActivityManager");
+		service.startOperationCall(operation);
 	}
 	
 	PlasmaCore.DataSource {
@@ -105,15 +98,17 @@ Item {
 
 	Component.onCompleted: {
 		plasmoid.setAction("manageActivities", i18n("Manage Activities..."), "preferences-activities");
-	}
-
-	Activities.ActivityModel {
-		id: activityModel
-		shownStates: "Running"
+		activityModel.setShownStates(activityModel.shownStates);
+		stoppedActivityModel.setShownStates(stoppedActivityModel.shownStates);
 	}
 	
 	Activities.ActivityModel {
 		id: stoppedActivityModel
 		shownStates: "Stopped"
+	}
+
+	Activities.ActivityModel {
+		id: activityModel
+		shownStates: "Running"
 	}
 }
