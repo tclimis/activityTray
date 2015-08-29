@@ -34,6 +34,7 @@ Item {
 		id: stoppedActivitiesDelegate
 		ActivityDelegate {
 			height: units.iconSizes.medium + units.smallSpacing
+			width: parent.width
 			acceptedButtons: Qt.LeftButton
 			state: "list"
 		}

@@ -37,14 +37,6 @@ MouseArea {
 	property string state: undefined
 	property string pressedItem: ""
 	
-	PlasmaComponents.Highlight {
-		opacity: getOpacity()
-		anchors.horizontalCenter: parent.hCenter
-		anchors.verticalCenter: parent.verticalCenter
-		anchors.fill: parent
-		Behavior on opacity { NumberAnimation {} }
-	}
-	
 	function getOpacity() {
 		if( (state == "grid" && current) || (state == "list" && containsMouse) ) {
 			return 1;
@@ -52,30 +44,44 @@ MouseArea {
 		return 0;
 	}
 	
-	PlasmaComponents.Label {
-		id: mainLabel
-		text: name
-		visible: parent.state == "list"
-		anchors {
-			left: parent.left
-			leftMargin: units.iconSizes.medium + units.smallSpacing
-			right: parent.right
-			verticalCenter: parent.verticalCenter
-		}
-	}
 	
-	PlasmaCore.IconItem {
-		id: activityIcon
-		source: iconSource
-		width: parent.state == "grid" ? parent.width : units.iconSizes.medium
-		height: parent.state == "grid" ? parent.height : units.iconSizes.medium
-		state: parent.state
+	Item {
+		id: activity
+		width: parent.width
+		height: parent.height
 		
-		PlasmaCore.ToolTipArea {
-			id: toolTip
+		PlasmaComponents.Highlight {
+			opacity: getOpacity()
+			anchors.horizontalCenter: parent.hCenter
+			anchors.verticalCenter: parent.verticalCenter
 			anchors.fill: parent
-			active: !isExpanded
-			mainText: name
+			Behavior on opacity { NumberAnimation {} }
+		}
+	
+		PlasmaCore.IconItem {
+			id: activityIcon
+			source: iconSource
+			width: wrapper.state == "grid" ? parent.width : units.iconSizes.medium
+			height: wrapper.state == "grid" ? parent.height : units.iconSizes.medium
+			state: parent.state
+			
+			PlasmaCore.ToolTipArea {
+				id: toolTip
+				anchors.fill: parent
+				active: !isExpanded
+				mainText: name
+			}
+		}
+		
+		PlasmaComponents.Label {
+			id: mainLabel
+			text: name
+			visible: parent.state == "list"
+			anchors {
+				left: activityIcon.right
+				leftMargin: units.smallSpacing
+				verticalCenter: activityIcon.verticalCenter
+			}
 		}
 	}
 	
