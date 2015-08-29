@@ -77,10 +77,12 @@ Item {
 	function removeState(state) {
 		var states = activityModel.shownStates;
 		var stateWithComma = "," + state;
-		if( states.search(/stateWithComma/i) > 0 )
+		if( states.search(/stateWithComma/i) > 0 ) {
 			states.replace(/stateWithComma/gi, "");
-		else if( states.search(/state/i) )
+		}
+		else if( states.search(/state/i) ) {
 			states.replace(/state/gi, "");
+		}
 		activityModel.setShownStates(states);
 	}
 	

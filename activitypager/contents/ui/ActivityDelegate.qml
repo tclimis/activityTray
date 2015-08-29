@@ -19,35 +19,56 @@
 
 import QtQuick 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddonsComponents
 import org.kde.activities 0.1 as Activities
 
 MouseArea {
 	id: wrapper
 	acceptedButtons: Qt.LeftButton | Qt.RightButton
-	onClicked: Qt.LeftButton ? 
-					activityModel.setCurrentActivity(id, function() {})
-					: activityModel.stopActivity(id, function() {})
+	onClicked: {
+		wrapper.pressedItem = id
+		if( mouse.button == Qt.LeftButton ) {
+			activityModel.setCurrentActivity(id, function() {})
+		}
+	}
 	
 	property bool isExpanded: plasmoid.expanded
-	property string state: "anchorCenter"
+	property string state: undefined
+	property string pressedItem: ""
 	
-	Rectangle {
-		id: highlightBackground
-		color: theme.highlightColor
-		width: parent.width
-		height: parent.height
-		opacity: current ? 0.6 : 0
-		radius: 3
+	PlasmaComponents.Highlight {
+		opacity: getOpacity()
 		anchors.horizontalCenter: parent.hCenter
 		anchors.verticalCenter: parent.verticalCenter
+		anchors.fill: parent
+		Behavior on opacity { NumberAnimation {} }
+	}
+	
+	function getOpacity() {
+		if( (state == "grid" && current) || (state == "list" && containsMouse) ) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	PlasmaComponents.Label {
+		id: mainLabel
+		text: name
+		visible: parent.state == "list"
+		anchors {
+			left: parent.left
+			leftMargin: units.iconSizes.medium + units.smallSpacing
+			right: parent.right
+			verticalCenter: parent.verticalCenter
+		}
 	}
 	
 	PlasmaCore.IconItem {
 		id: activityIcon
 		source: iconSource
-		height: parent.height
-		width: parent.widthactivityIcon
+		width: parent.state == "grid" ? parent.width : units.iconSizes.medium
+		height: parent.state == "grid" ? parent.height : units.iconSizes.medium
 		state: parent.state
 		
 		PlasmaCore.ToolTipArea {
@@ -59,7 +80,7 @@ MouseArea {
 	}
 	
 	State {
-		name: "anchorCenter"
+		name: "grid"
 		AnchorChanges {
 			target: activityIcon
 			anchors.horizontalCenter: parent.horizontalCenter
@@ -68,7 +89,7 @@ MouseArea {
 	}
 	
 	State {
-		name: "anchorLeft"
+		name: "list"
 		AnchorChanges {
 			target: activityIcon
 			anchors.horizontalCenter: undefined
@@ -77,10 +98,12 @@ MouseArea {
 	}
 	
 	function action_stopActivity() {
-		activityModel.stopActivity(id, function() {});
+		activityModel.stopActivity(wrapper.pressedItem, function() {});
 	}
 	
 	Component.onCompleted: {
-		plasmoid.setAction("stopActivity", i18n("Stop Activity"));
+		if( wrapper.pressedItem != "" ) {
+			plasmoid.setAction("stopActivity", i18n("Stop Activity"));
+		}
 	}
 }

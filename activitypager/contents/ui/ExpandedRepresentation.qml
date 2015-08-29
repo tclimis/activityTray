@@ -25,14 +25,25 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 
 Item {
 	id: expandedItemContainer
+	height: (units.iconSizes.medium + units.smallSpacing) * hiddenView.count + units.smallSpacing
+	
 	property QtObject stoppedActivityTrayModel: undefined
 	property bool animate: true
-	height: (units.iconSizes.medium + units.smallSpacing) * hiddenView.count + units.smallSpacing
+	
+	Component {
+		id: stoppedActivitiesDelegate
+		ActivityDelegate {
+			height: units.iconSizes.medium + units.smallSpacing
+			acceptedButtons: Qt.LeftButton
+			state: "list"
+		}
+	}
 	
 	ListView {
 		id: hiddenView
 		model: stoppedActivityTrayModel
-		delegate: ActivityListDelegate {}
+		delegate: stoppedActivitiesDelegate
+		interactive: false;
 		anchors.fill: parent
 	}
 
@@ -43,7 +54,5 @@ Item {
 				expandedItemContainer.animate = false;
 			}
 		}
-
 	}
-
 }
