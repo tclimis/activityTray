@@ -29,7 +29,10 @@ MouseArea {
 	onClicked: {
 		wrapper.pressedItem = id
 		if( mouse.button == Qt.LeftButton ) {
-			activityModel.setCurrentActivity(id, function() {})
+			activityModel.setCurrentActivity(wrapper.pressedItem, function() {})
+		}
+		else if( mouse.button == Qt.RightButton ) {
+			action_stopActivity();
 		}
 	}
 	
@@ -37,25 +40,29 @@ MouseArea {
 	property string state: undefined
 	property string pressedItem: ""
 	
-	function getOpacity() {
-		if( (state == "grid" && current) || (state == "list" && containsMouse) ) {
-			return 1;
-		}
-		return 0;
-	}
-	
-	
 	Item {
 		id: activity
-		width: parent.width
-		height: parent.height
+		anchors.fill: parent
 		
 		PlasmaComponents.Highlight {
 			opacity: getOpacity()
-			anchors.horizontalCenter: parent.hCenter
+			anchors.horizontalCenter: parent.horizontalCenter
 			anchors.verticalCenter: parent.verticalCenter
 			anchors.fill: parent
 			Behavior on opacity { NumberAnimation {} }
+		}
+		
+		PlasmaComponents.Label {
+			id: mainLabel
+			text: name
+			visible: wrapper.state == "list"
+			
+			anchors {
+				left: parent.left
+				leftMargin: units.iconSizes.medium + units.smallSpacing
+				verticalCenter: activityIcon.verticalCenter
+				fill: parent
+			}
 		}
 	
 		PlasmaCore.IconItem {
@@ -64,6 +71,7 @@ MouseArea {
 			width: wrapper.state == "grid" ? parent.width : units.iconSizes.medium
 			height: wrapper.state == "grid" ? parent.height : units.iconSizes.medium
 			state: parent.state
+			anchors.leftMargin: wrapper.state == "list" ? 15 : 0
 			
 			PlasmaCore.ToolTipArea {
 				id: toolTip
@@ -72,17 +80,13 @@ MouseArea {
 				mainText: name
 			}
 		}
-		
-		PlasmaComponents.Label {
-			id: mainLabel
-			text: name
-			visible: parent.state == "list"
-			anchors {
-				left: activityIcon.right
-				leftMargin: units.smallSpacing
-				verticalCenter: activityIcon.verticalCenter
-			}
+	}
+	
+	function getOpacity() {
+		if( (state == "grid" && current) || (state == "list" && containsMouse) ) {
+			return 1;
 		}
+		return 0;
 	}
 	
 	State {
