@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright 2013 Sebastian Kügler <sebas@kde.org>                       *
+ *   Copyright 2015 Tim Climis <tim.climis@gmail.com>                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU Library General Public License as       *
@@ -20,19 +20,17 @@
 import QtQuick 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
-import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddonsComponents
-import org.kde.activities 0.1 as Activities
 
 MouseArea {
 	id: wrapper
 	acceptedButtons: Qt.LeftButton | Qt.RightButton
 	onClicked: {
-		wrapper.pressedItem = id
-		if( mouse.button == Qt.LeftButton ) {
-			activityModel.setCurrentActivity(wrapper.pressedItem, function() {})
+		if( mouse.button === Qt.LeftButton ) {
+			activityModel.setCurrentActivity(id, function() {})
 		}
-		else if( mouse.button == Qt.RightButton ) {
-			action_stopActivity();
+		else if( mouse.button === Qt.RightButton ) {
+			contextMenu.visualParent = menuAnchor
+			contextMenu.open()
 		}
 	}
 	
@@ -79,6 +77,23 @@ MouseArea {
 				active: !isExpanded
 				mainText: name
 			}
+			
+			PlasmaComponents.ContextMenu {
+				id: contextMenu
+				
+				PlasmaComponents.MenuItem {
+					text: i18n("Stop Activity");
+					onClicked: activityModel.stopActivity(id, function() {})
+				}
+			}
+			
+			Item {
+				id: menuAnchor
+				width: 0
+				height: 0
+				anchors.top: parent.verticalCenter
+				anchors.left: parent.horizontalCenter
+			}
 		}
 	}
 	
@@ -104,16 +119,6 @@ MouseArea {
 			target: activityIcon
 			anchors.horizontalCenter: undefined
 			anchors.left: parent.left
-		}
-	}
-	
-	function action_stopActivity() {
-		activityModel.stopActivity(wrapper.pressedItem, function() {});
-	}
-	
-	Component.onCompleted: {
-		if( wrapper.pressedItem != "" ) {
-			plasmoid.setAction("stopActivity", i18n("Stop Activity"));
 		}
 	}
 }

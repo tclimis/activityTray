@@ -1,5 +1,5 @@
-/***************************************************************************
-*   Copyright 2013 Sebastian Kügler <sebas@kde.org>                       *
+/**************************************************************************
+*   Copyright 2015 Tim Climis <tim.climis@gmail.com>                      *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
 *   it under the terms of the GNU Library General Public License as       *
@@ -12,13 +12,12 @@
 *   GNU Library General Public License for more details.                  *
 *                                                                         *
 *   You should have received a copy of the GNU Library General Public     *
-*   License along with this program; if not, wrstoppedActivityModel.ite to the                 *
+*   License along with this program; if not, write to the                 *
 *   Free Software Foundation, Inc.,                                       *
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
 ***************************************************************************/
 
 import QtQuick 2.0
-import QtQuick.Layouts 1.1
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.activities 0.1 as Activities
@@ -46,7 +45,6 @@ Item {
 			plasmoid.expanded = true;
 		}
 	}
-		
 
 	// This is the main view in the panel
 	Plasmoid.compactRepresentation: CompactRepresentation {
@@ -56,34 +54,6 @@ Item {
 	// This is the view when clicking on the arrow
 	Plasmoid.fullRepresentation: ExpandedRepresentation {
 		stoppedActivityTrayModel: stoppedActivityModel
-	}
-
-	Connections {
-		target: plasmoid.configuration
-		onRunningActivitiesShownChanged: plasmoid.configuration.runningActivitiesShown ? appendState("Running") : removeState("Running");
-		onStoppedActivitiesShownChanged: plasmoid.configuration.stoppedActivitiesShown ? appendState("Stopped") : removeState("Stopped");
-	}
-
-	
-	function appendState(state) {
-		var states = activityModel.shownStates;
-		if( states.length !== 0 ) {
-			states.concat(",");
-		}
-		states.concat(state);
-		activityModel.setShownStates(states);
-	}
-	
-	function removeState(state) {
-		var states = activityModel.shownStates;
-		var stateWithComma = "," + state;
-		if( states.search(/stateWithComma/i) > 0 ) {
-			states.replace(/stateWithComma/gi, "");
-		}
-		else if( states.search(/state/i) ) {
-			states.replace(/state/gi, "");
-		}
-		activityModel.setShownStates(states);
 	}
 	
 	function action_manageActivities() {
