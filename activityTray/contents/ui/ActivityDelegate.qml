@@ -85,6 +85,12 @@ MouseArea {
 					text: i18n("Stop Activity");
 					onClicked: activityModel.stopActivity(id, function() {})
 				}
+				
+				PlasmaComponents.MenuItem {
+					text: i18n("Manage Activities...")
+					icon: "preferences-activities"
+					onClicked: root.action_manageActivities()
+				}
 			}
 			
 			Item {

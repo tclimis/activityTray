@@ -70,8 +70,8 @@ Item {
 
 	Component.onCompleted: {
 		plasmoid.setAction("manageActivities", i18n("Manage Activities..."), "preferences-activities");
-		activityModel.setShownStates(activityModel.shownStates);
-		stoppedActivityModel.setShownStates(stoppedActivityModel.shownStates);
+		//activityModel.setShownStates(activityModel.shownStates);
+		//stoppedActivityModel.setShownStates(stoppedActivityModel.shownStates);
 	}
 	
 	Activities.ActivityModel {
