@@ -23,6 +23,7 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 
 MouseArea {
 	id: wrapper
+	hoverEnabled: true
 	acceptedButtons: Qt.LeftButton | Qt.RightButton
 	onClicked: {
 		if( mouse.button === Qt.LeftButton ) {
@@ -47,7 +48,6 @@ MouseArea {
 			anchors.horizontalCenter: parent.horizontalCenter
 			anchors.verticalCenter: parent.verticalCenter
 			anchors.fill: parent
-			Behavior on opacity { NumberAnimation {} }
 		}
 		
 		PlasmaComponents.Label {
@@ -98,8 +98,13 @@ MouseArea {
 	}
 	
 	function getOpacity() {
-		if( (state == "grid" && current) || (state == "list" && containsMouse) ) {
+		if( state == "grid" && current ) {
 			return 1;
+		}
+		else if( (state == "grid" && containsMouse)
+			|| (state == "list" && containsMouse)
+		) {
+			return 0.5;
 		}
 		return 0;
 	}
