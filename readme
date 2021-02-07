@@ -1,0 +1,4 @@
+To install this widget:
+
+kpackagetool5 -t Plasma/Applet --install ./activityTray
+
